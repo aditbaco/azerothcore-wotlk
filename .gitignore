@@ -117,3 +117,6 @@ local.properties
 # ==================
 .cache
 compile_commands.json
+
+# local build/run logs
+/build_*.log
