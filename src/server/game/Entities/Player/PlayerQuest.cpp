@@ -1107,7 +1107,13 @@ bool Player::SatisfyQuestRace(Quest const* qInfo, bool msg) const
     uint32 reqraces = qInfo->GetAllowableRaces();
     if (reqraces == 0)
         return true;
-    if ((reqraces & getRaceMask()) == 0)
+    uint32 raceMask = getRaceMask();
+    // Custom races (12-21) inherit their faction's quest eligibility (ARAC):
+    // map them onto the full Alliance/Horde race mask so they can take
+    // the same quests their faction can.
+    if (getRace() >= 12 && getRace() <= 21)
+        raceMask |= (TeamIdForRace(getRace()) == TEAM_HORDE) ? 690 : 1101;
+    if ((reqraces & raceMask) == 0)
     {
         if (msg)
             SendCanTakeQuestResponse(INVALIDREASON_QUEST_FAILED_WRONG_RACE);
